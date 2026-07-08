@@ -1,0 +1,27 @@
+{
+  "name": "cse341-web-service",
+  "version": "1.0.0",
+  "description": "after",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kasagga39/cse341-web-service.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Kasagga39/cse341-web-service/issues"
+  },
+  "homepage": "https://github.com/Kasagga39/cse341-web-service#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongodb": "^7.5.0",
+    "nodemon": "^3.1.14"
+  }
+}
