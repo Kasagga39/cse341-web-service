@@ -1,74 +1,98 @@
 // helpful link for converting image to base64: https://elmah.io/tools/base64-image-encoder/
 async function apiFetch(url) {
     const response = await fetch(url);
-    const data = await response.json();
-    return data;
+    if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+    }
+    return response.json();
 }
 
 const getData = async () => {
-    const data = await apiFetch('/contacts');
-    if (Array.isArray(data) && data.length > 0) {
-        displayAllData(data[0]);
+    try {
+        const data = await apiFetch('/professional');
+        const profile = Array.isArray(data) ? data[0] : data;
+        if (profile) {
+            displayAllData(profile);
+        }
+    } catch (error) {
+        console.error('Unable to load profile data:', error);
     }
 };
 
 function displayAllData(data) {
-    displayProfessionalName(`${data.firstName} ${data.lastName}`);
-    displayPrimaryDescription(data.email);
-    displayWorkDescription(data.favoriteColor);
-    displayLinkTitleText('Birthday:');
-    displayLinkedInLink(data.birthday);
-    hideUnusedFields();
+    displayProfessionalName(data.professionalName || `${data.firstName || ''} ${data.lastName || ''}`.trim());
+    displayPrimaryDescription(data);
+    displayWorkDescription(data);
+    displayLinkTitleText(data.linkTitleText || 'Links');
+    displayLinkedInLink(data.linkedInLink || {});
+    displayGitHubLink(data.githubLink || {});
+    displayContactText(data.contactText || '');
+
+    if (data.base64Image) {
+        displayImage(data.base64Image);
+    } else {
+        hideUnusedFields();
+    }
 }
 
 function hideUnusedFields() {
     const image = document.getElementById('professionalImage');
     image.style.display = 'none';
-    const nameLink = document.getElementById('nameLink');
-    nameLink.style.display = 'none';
-    const linkTitle = document.getElementById('linkTitleText');
-    linkTitle.style.marginTop = '1rem';
 }
 
 function displayProfessionalName(n) {
-    let professionalName = document.getElementById('professionalName');
+    const professionalName = document.getElementById('professionalName');
     professionalName.innerHTML = n;
 }
 
 function displayImage(img) {
-    let image = document.getElementById('professionalImage');
-    image.src = `data:image/png;base64, ${img}`;
+    const image = document.getElementById('professionalImage');
+    image.src = `data:image/png;base64,${img}`;
+    image.style.display = 'block';
 }
+
 function displayPrimaryDescription(data) {
-    let nameLink = document.getElementById('nameLink');
-    nameLink.innerHTML = data.nameLink.firstName;
-    nameLink.href = data.nameLink.url;
-    let primaryDescription = document.getElementById('primaryDescription');
-    primaryDescription.innerHTML = data.primaryDescription;
+    const nameLink = document.getElementById('nameLink');
+    const primaryDescription = document.getElementById('primaryDescription');
+
+    if (data.nameLink) {
+        nameLink.innerHTML = data.nameLink.firstName || 'Profile';
+        nameLink.href = data.nameLink.url || '#';
+        nameLink.style.display = 'inline';
+    } else {
+        nameLink.style.display = 'none';
+    }
+
+    primaryDescription.innerHTML = data.primaryDescription || '';
 }
 
 function displayWorkDescription(data) {
-    let workDescription1 = document.getElementById('workDescription1');
-    workDescription1.innerHTML = data.workDescription1;
-    let workDescription2 = document.getElementById('workDescription2');
-    workDescription2.innerHTML = data.workDescription2;
+    const workDescription1 = document.getElementById('workDescription1');
+    const workDescription2 = document.getElementById('workDescription2');
+    workDescription1.innerHTML = data.workDescription1 || '';
+    workDescription2.innerHTML = data.workDescription2 || '';
 }
 
 function displayLinkTitleText(data) {
-    let linkTitle = document.getElementById('linkTitleText');
-    linkTitle.innerHTML = data.linkTitleText;
+    const linkTitle = document.getElementById('linkTitleText');
+    linkTitle.innerHTML = data;
 }
 
 function displayLinkedInLink(data) {
-    let linkedInLink = document.getElementById('linkedInLink');
-    linkedInLink.innerHTML = data.linkedInLink.text;
-    linkedInLink.href = data.linkedInLink.link;
+    const linkedInLink = document.getElementById('linkedInLink');
+    linkedInLink.innerHTML = data.text || 'LinkedIn';
+    linkedInLink.href = data.link || '#';
 }
 
 function displayGitHubLink(data) {
-    let githubLink = document.getElementById('githubLink');
-    githubLink.innerHTML = data.githubLink.text;
-    githubLink.href = data.githubLink.link;
+    const githubLink = document.getElementById('githubLink');
+    githubLink.innerHTML = data.text || 'GitHub';
+    githubLink.href = data.link || '#';
+}
+
+function displayContactText(data) {
+    const contactText = document.getElementById('contactText');
+    contactText.innerHTML = data;
 }
 
 getData();
