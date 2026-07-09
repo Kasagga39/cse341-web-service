@@ -5,51 +5,103 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+    <title>Contacts Directory - CSE341 Web Service</title>
+    <meta name="description"
+        content="A live MongoDB-backed contacts management directory featuring search, create, update, and delete operations.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css">
     <script src="./script.js" defer></script>
 </head>
 
 <body>
     <div class="container">
-        <div class="content">
-            <div class="about">
+        <header class="main-header">
+            <div class="header-content">
                 <h1>
-                    <div class="proName" id="professionalName"></div>
-                    <div class="stage">
-                        <div class="pyramid3d">
-                            <div class="triangle side1"></div>
-                            <div class="triangle side2"></div>
-                            <div class="triangle side3"></div>
-                            <div class="triangle side4"></div>
-                        </div>
-                    </div>
+                    <span class="title-text">Contacts Directory</span>
                 </h1>
-                <div class="flex-container">
-                    <div class="flex-child">
-                        <img src="" alt="" id="professionalImage">
-                    </div>
-                    <div class="flex-child">
-                        <h3>
-                            <a href="" target="_blank" id="nameLink"></a><span id="primaryDescription"></span>
-                        </h3>
-
+                <div class="stage">
+                    <div class="pyramid3d">
+                        <div class="triangle side1"></div>
+                        <div class="triangle side2"></div>
+                        <div class="triangle side3"></div>
+                        <div class="triangle side4"></div>
                     </div>
                 </div>
-                <p class='pleft' id="workDescription1"></p>
-                <p class='pright' id="workDescription2"></p>
-                <h3 id="linkTitleText"></h3>
-                <ul>
-                    <li><a href="" target="_blank" id="linkedInLink"></a></li>
-                    <li><a href="" target="_blank" id="githubLink"></a></li>
-                </ul>
-                <p id="contactText"></p>
             </div>
+        </header>
+
+        <main class="content">
+            <div class="toolbar">
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Search contacts by name, email, or color..."
+                        aria-label="Search contacts">
+                </div>
+                <button id="addContactBtn" class="btn btn-primary" aria-label="Add new contact">
+                    <i class="fas fa-plus"></i> Add Contact
+                </button>
+            </div>
+
+            <section id="contactsSection">
+                <div id="loadingIndicator" class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Fetching contacts...</p>
+                </div>
+                <div id="emptyState" class="empty-state hidden">
+                    <i class="far fa-address-book empty-icon"></i>
+                    <p>No contacts found. Add one to get started!</p>
+                </div>
+                <div id="contactsGrid" class="contacts-grid"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Contact</h2>
+                <button id="closeModalBtn" class="close-btn" aria-label="Close modal">&times;</button>
+            </div>
+            <form id="contactForm" novalidate>
+                <input type="hidden" id="contactId">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" required placeholder="e.g. John">
+                    <span class="error-msg" id="firstNameError">First name is required</span>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" required placeholder="e.g. Doe">
+                    <span class="error-msg" id="lastNameError">Last name is required</span>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="e.g. john.doe@example.com">
+                    <span class="error-msg" id="emailError">Please enter a valid email address</span>
+                </div>
+                <div class="form-group">
+                    <label for="favoriteColor">Favorite Color</label>
+                    <input type="text" id="favoriteColor" placeholder="e.g. Blue, #3498db">
+                </div>
+                <div class="form-group">
+                    <label for="birthday">Birthday</label>
+                    <input type="date" id="birthday">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary">Save Contact</button>
+                </div>
+            </form>
         </div>
     </div>
 
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="toast hidden" role="alert">
+        <span id="toastMessage">Success message here</span>
+    </div>
 </body>
 
 </html>

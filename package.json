@@ -4,9 +4,10 @@
   "description": "after",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js",
-    "start-node": "node server.js"
+    "test": "node --test",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node backend/db/seed.js"
   },
   "repository": {
     "type": "git",
@@ -24,6 +25,9 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "mongodb": "^7.5.0",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "seed": "^0.4.4",
+    "swagger-jsdoc": "^6.2.1",
+    "swagger-ui-express": "^4.0.0"
   }
 }

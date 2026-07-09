@@ -7,7 +7,7 @@ const getData = async (req, res) => {
         let profile = null;
 
         for (const collectionName of collections) {
-            const result = await mongodb.getDb().db().collection(collectionName).findOne({});
+            const result = await mongodb.getDb().collection(collectionName).findOne({});
             if (result) {
                 profile = result;
                 break;
