@@ -6,20 +6,25 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const contactsRoutes = require('./routes/contacts');
 const professionalRoutes = require('./routes/professional');
+const swaggerConfig = require('../swagger-config');
 
 const app = express();
 
+// Determine the server URL based on environment
+const serverUrl = process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000';
+
+// Update swagger config with current server URL
+swaggerConfig.definition.servers = [
+    {
+        url: serverUrl,
+        description: process.env.RENDER_EXTERNAL_URL ? 'Production Server' : 'Development Server'
+    }
+];
+
+// Configure swagger options with the external config file
 const swaggerOptions = {
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'CSE341 Contact API',
-            version: '1.0.0',
-            description: 'API for managing contacts with CRUD operations.'
-        },
-        servers: [{ url: 'http://localhost:3000' }]
-    },
-    apis: [path.join(__dirname, 'routes', '*.js')]
+    ...swaggerConfig,
+    apis: [path.resolve(__dirname, 'routes/contacts.js')]
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);

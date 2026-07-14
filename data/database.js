@@ -37,7 +37,29 @@ const getDb = () => {
     return _db;
 };
 
+const ensureDb = async () => {
+    if (_db) {
+        return _db;
+    }
+
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGODB_URL;
+    const dbName = process.env.MONGODB_DB || 'project1';
+
+    if (!mongoUri) {
+        throw new Error('MongoDB connection string is not defined in environment variables');
+    }
+
+    const client = new MongoClient(mongoUri, {
+        serverSelectionTimeoutMS: 10000,
+    });
+
+    await client.connect();
+    _db = client.db(dbName);
+    return _db;
+};
+
 module.exports = {
     initDb,
     getDb,
+    ensureDb,
 };

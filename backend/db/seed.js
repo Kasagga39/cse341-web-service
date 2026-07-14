@@ -64,6 +64,20 @@ const seedContacts = async () => {
         email: 'charlie.brown@example.com',
         favoriteColor: 'Orange',
         birthday: '1985-07-30'
+      },
+      {
+        firstName: 'lilian',
+        lastName: 'Nakiwala',
+        email: 'liliannakiwala@example.com',
+        favoriteColor: 'Orange',
+        birthday: '1999-07-20'
+      },
+      {
+        firstName: 'Emmanuel',
+        lastName: 'Kakande',
+        email: 'emmanuelkakande@example.com',
+        favoriteColor: 'Orange',
+        birthday: '1995-08-30'
       }
     ];
 

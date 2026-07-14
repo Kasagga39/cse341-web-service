@@ -1,0 +1,119 @@
+### REST Client for CSE341 Contacts API
+### Use this file to test all API endpoints
+
+### Variables
+@baseUrl = http://localhost:3000
+@apiUrl = http://localhost:3000/api/contacts
+
+### ============================================
+### GET ALL CONTACTS
+### ============================================
+GET {{apiUrl}} HTTP/1.1
+
+
+### ============================================
+### CREATE A NEW CONTACT
+### ============================================
+POST {{apiUrl}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@example.com",
+  "favoriteColor": "Blue",
+  "birthday": "1990-01-15T00:00:00.000Z"
+}
+
+### ============================================
+### CREATE ANOTHER CONTACT
+### ============================================
+POST {{apiUrl}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstName": "Jane",
+  "lastName": "Smith",
+  "email": "jane.smith@example.com",
+  "favoriteColor": "Green",
+  "birthday": "1992-03-22T00:00:00.000Z"
+}
+
+### ============================================
+### CREATE THIRD CONTACT
+### ============================================
+POST {{apiUrl}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstName": "Michael",
+  "lastName": "Johnson",
+  "email": "michael.johnson@example.com",
+  "favoriteColor": "Red",
+  "birthday": "1988-07-10T00:00:00.000Z"
+}
+
+### ============================================
+### CREATE FOURTH CONTACT
+### ============================================
+POST {{apiUrl}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstName": "Sarah",
+  "lastName": "Williams",
+  "email": "sarah.williams@example.com",
+  "favoriteColor": "Purple",
+  "birthday": "1995-11-05T00:00:00.000Z"
+}
+
+### ============================================
+### CREATE FIFTH CONTACT
+### ============================================
+POST {{apiUrl}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstName": "David",
+  "lastName": "Brown",
+  "email": "david.brown@example.com",
+  "favoriteColor": "Orange",
+  "birthday": "1991-05-20T00:00:00.000Z"
+}
+
+### ============================================
+### GET CONTACT BY ID
+### Replace 507f1f77bcf86cd799439011 with an actual ID from GET all
+### ============================================
+GET {{apiUrl}}/507f1f77bcf86cd799439011 HTTP/1.1
+
+
+### ============================================
+### UPDATE A CONTACT BY ID
+### Replace 507f1f77bcf86cd799439011 with an actual ID from GET all
+### ============================================
+PUT {{apiUrl}}/507f1f77bcf86cd799439011 HTTP/1.1
+Content-Type: application/json
+
+{
+  "firstName": "Jonathan",
+  "email": "jonathan.doe@example.com",
+  "favoriteColor": "Cyan"
+}
+
+### ============================================
+### DELETE A CONTACT BY ID
+### Replace 507f1f77bcf86cd799439011 with an actual ID from GET all
+### ============================================
+DELETE {{apiUrl}}/507f1f77bcf86cd799439011 HTTP/1.1
+
+
+### ============================================
+### Test with alternate endpoint paths
+### ============================================
+
+### GET all contacts (alternate path)
+GET {{baseUrl}}/contacts HTTP/1.1
+
+### GET single contact (alternate path)
+GET {{baseUrl}}/contacts/507f1f77bcf86cd799439011 HTTP/1.1
