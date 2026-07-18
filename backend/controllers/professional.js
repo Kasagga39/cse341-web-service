@@ -3,11 +3,12 @@ const fallbackProfile = require('../users');
 
 const getData = async (req, res) => {
     try {
+        const db = await mongodb.ensureDb();
         const collections = ['user', 'users'];
         let profile = null;
 
         for (const collectionName of collections) {
-            const result = await mongodb.getDb().collection(collectionName).findOne({});
+            const result = await db.collection(collectionName).findOne({});
             if (result) {
                 profile = result;
                 break;

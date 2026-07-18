@@ -5,15 +5,14 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const contactsRoutes = require('./routes/contacts');
+const profilesRoutes = require('./routes/profiles');
 const professionalRoutes = require('./routes/professional');
 const swaggerConfig = require('../swagger-config');
 
 const app = express();
 
-// Determine the server URL based on environment
 const serverUrl = process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000';
 
-// Update swagger config with current server URL
 swaggerConfig.definition.servers = [
     {
         url: serverUrl,
@@ -21,10 +20,12 @@ swaggerConfig.definition.servers = [
     }
 ];
 
-// Configure swagger options with the external config file
 const swaggerOptions = {
     ...swaggerConfig,
-    apis: [path.resolve(__dirname, 'routes/contacts.js')]
+    apis: [
+        path.resolve(__dirname, 'routes/contacts.js'),
+        path.resolve(__dirname, 'routes/profiles.js')
+    ]
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
@@ -44,10 +45,13 @@ app
     .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
     .use('/contacts', contactsRoutes)
     .use('/api/contacts', contactsRoutes)
+    .use('/api/profiles', profilesRoutes)
     .use('/professional', professionalRoutes)
-    .use('/api/professional', professionalRoutes)
     .get('/', (req, res) => {
         res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+    })
+    .get('/profiles.html', (req, res) => {
+        res.sendFile(path.join(__dirname, '..', 'frontend', 'profiles.html'));
     });
 
 module.exports = app;

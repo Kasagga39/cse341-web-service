@@ -1,29 +1,65 @@
 const { ObjectId } = require('mongodb');
 const mongodb = require('../db/connect');
 
-const fallbackContacts = [
-    {
-        _id: 'fallback-1',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        favoriteColor: 'Blue',
-        birthday: '1990-01-15T00:00:00.000Z'
-    }
-];
-
 const normalizeContact = (contact = {}) => ({
     _id: contact._id,
-    firstName: contact.firstName || contact.fastname || contact.first_name || '',
-    lastName: contact.lastName || contact.lastname || contact.last_name || '',
+    firstName: contact.firstName || '',
+    lastName: contact.lastName || '',
     email: contact.email || '',
-    favoriteColor: contact.favoriteColor || contact['fav colour'] || contact.fav_color || contact.favoritecolor || '',
-    birthday: contact.birthday || contact['date of birth'] || contact.birthdate || ''
+    favoriteColor: contact.favoriteColor || '',
+    birthday: contact.birthday || ''
 });
 
 const getCollection = async () => {
     const db = await mongodb.ensureDb();
     return db.collection('contacts');
+};
+
+const validateEmail = (email) => {
+    if (!email || typeof email !== 'string') return false;
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email.trim());
+};
+
+const validateContact = (body, isUpdate = false) => {
+    const errors = [];
+    if (!isUpdate) {
+        if (!body.firstName || typeof body.firstName !== 'string' || !body.firstName.trim()) {
+            errors.push('firstName is required and must be a non-empty string');
+        }
+        if (!body.lastName || typeof body.lastName !== 'string' || !body.lastName.trim()) {
+            errors.push('lastName is required and must be a non-empty string');
+        }
+        if (!body.email || !validateEmail(body.email)) {
+            errors.push('A valid email is required');
+        }
+        if (!body.favoriteColor || typeof body.favoriteColor !== 'string' || !body.favoriteColor.trim()) {
+            errors.push('favoriteColor is required and must be a non-empty string');
+        }
+        if (!body.birthday || typeof body.birthday !== 'string' || !body.birthday.trim()) {
+            errors.push('birthday is required and must be a non-empty string');
+        }
+    } else {
+        if (body.firstName !== undefined && (typeof body.firstName !== 'string' || !body.firstName.trim())) {
+            errors.push('firstName must be a non-empty string');
+        }
+        if (body.lastName !== undefined && (typeof body.lastName !== 'string' || !body.lastName.trim())) {
+            errors.push('lastName must be a non-empty string');
+        }
+        if (body.email !== undefined && !validateEmail(body.email)) {
+            errors.push('A valid email is required');
+        }
+        if (body.favoriteColor !== undefined && (typeof body.favoriteColor !== 'string' || !body.favoriteColor.trim())) {
+            errors.push('favoriteColor must be a non-empty string');
+        }
+        if (body.birthday !== undefined && (typeof body.birthday !== 'string' || !body.birthday.trim())) {
+            errors.push('birthday must be a non-empty string');
+        }
+        if (Object.keys(body).length === 0) {
+            errors.push('At least one field must be provided for update');
+        }
+    }
+    return errors;
 };
 
 const getAllContacts = async (req, res) => {
@@ -58,12 +94,17 @@ const getContactById = async (req, res) => {
 
 const createContact = async (req, res) => {
     try {
+        const errors = validateContact(req.body);
+        if (errors.length > 0) {
+            return res.status(400).json({ message: 'Validation failed', errors });
+        }
+
         const contact = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            favoriteColor: req.body.favoriteColor,
-            birthday: req.body.birthday
+            firstName: req.body.firstName.trim(),
+            lastName: req.body.lastName.trim(),
+            email: req.body.email.trim().toLowerCase(),
+            favoriteColor: req.body.favoriteColor.trim(),
+            birthday: req.body.birthday.trim()
         };
 
         const collection = await getCollection();
@@ -76,21 +117,23 @@ const createContact = async (req, res) => {
 
 const updateContact = async (req, res) => {
     try {
+        const errors = validateContact(req.body, true);
+        if (errors.length > 0) {
+            return res.status(400).json({ message: 'Validation failed', errors });
+        }
+
         const contactId = new ObjectId(req.params.id);
-        const update = {
-            $set: {
-                ...(req.body.firstName ? { firstName: req.body.firstName } : {}),
-                ...(req.body.lastName ? { lastName: req.body.lastName } : {}),
-                ...(req.body.email ? { email: req.body.email } : {}),
-                ...(req.body.favoriteColor ? { favoriteColor: req.body.favoriteColor } : {}),
-                ...(req.body.birthday ? { birthday: req.body.birthday } : {})
-            }
-        };
+        const updateFields = {};
+        if (req.body.firstName) updateFields.firstName = req.body.firstName.trim();
+        if (req.body.lastName) updateFields.lastName = req.body.lastName.trim();
+        if (req.body.email) updateFields.email = req.body.email.trim().toLowerCase();
+        if (req.body.favoriteColor) updateFields.favoriteColor = req.body.favoriteColor.trim();
+        if (req.body.birthday) updateFields.birthday = req.body.birthday.trim();
 
         const collection = await getCollection();
         const result = await collection.findOneAndUpdate(
             { _id: contactId },
-            update,
+            { $set: updateFields },
             { returnDocument: 'after' }
         );
 

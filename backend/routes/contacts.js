@@ -93,6 +93,20 @@ const contactsController = require('../controllers/contacts');
  *                   type: string
  *                 birthday:
  *                   type: string
+ *       400:
+ *         description: Validation error - missing or invalid fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Validation failed"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
  *       500:
  *         description: Server error creating contact
  */
@@ -194,7 +208,18 @@ router.post('/', contactsController.createContact);
  *                 birthday:
  *                   type: string
  *       400:
- *         description: Invalid contact ID format
+ *         description: Validation error or invalid ID format
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
  *       404:
  *         description: Contact not found
  *       500:

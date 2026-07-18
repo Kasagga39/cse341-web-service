@@ -97,7 +97,7 @@ function init() {
 async function loadContacts() {
     showLoading(true);
     try {
-        const data = await apiFetch('/contacts');
+        const data = await apiFetch('/api/contacts');
         allContacts = Array.isArray(data) ? data : [];
         renderContacts(allContacts);
     } catch (error) {
@@ -327,7 +327,7 @@ async function handleFormSubmit(e) {
     };
 
     const isEdit = !!contactId;
-    const url = isEdit ? `/contacts/${contactId}` : '/contacts';
+    const url = isEdit ? `/api/contacts/${contactId}` : '/api/contacts';
     const method = isEdit ? 'PUT' : 'POST';
 
     try {
@@ -357,7 +357,7 @@ async function handleDeleteContact(contact) {
         const card = document.getElementById(`contact-${contact._id}`);
         if (card) card.style.opacity = '0.5';
 
-        await apiFetch(`/contacts/${contact._id}`, {
+        await apiFetch(`/api/contacts/${contact._id}`, {
             method: 'DELETE'
         });
 
